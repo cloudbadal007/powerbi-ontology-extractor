@@ -1,0 +1,42 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black flake8 mypy isort
+    
+    - name: Check code formatting with black
+      run: |
+        black --check powerbi_ontology/ tests/ examples/ cli/
+    
+    - name: Check import sorting with isort
+      run: |
+        isort --check-only powerbi_ontology/ tests/ examples/ cli/
+    
+    - name: Lint with flake8
+      run: |
+        flake8 powerbi_ontology/ tests/ examples/ cli/ --max-line-length=88 --extend-ignore=E203,W503
+    
+    - name: Type check with mypy
+      run: |
+        mypy powerbi_ontology/ --ignore-missing-imports --no-strict-optional || true

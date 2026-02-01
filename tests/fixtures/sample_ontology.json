@@ -1,0 +1,56 @@
+{
+  "name": "TestOntology",
+  "version": "1.0.0",
+  "source": "Power BI: test.pbix",
+  "entities": [
+    {
+      "name": "Shipment",
+      "description": "Shipment entity with tracking",
+      "properties": [
+        {
+          "name": "ShipmentID",
+          "data_type": "String",
+          "required": true,
+          "unique": true
+        },
+        {
+          "name": "Temperature",
+          "data_type": "Decimal",
+          "required": false,
+          "unique": false
+        }
+      ],
+      "entity_type": "standard"
+    },
+    {
+      "name": "Customer",
+      "description": "Customer entity",
+      "properties": [
+        {
+          "name": "CustomerID",
+          "data_type": "String",
+          "required": true,
+          "unique": true
+        }
+      ],
+      "entity_type": "standard"
+    }
+  ],
+  "relationships": [
+    {
+      "from_entity": "Shipment",
+      "to_entity": "Customer",
+      "relationship_type": "belongs_to",
+      "cardinality": "many-to-one"
+    }
+  ],
+  "business_rules": [
+    {
+      "name": "HighRiskShipmentDetection",
+      "entity": "Shipment",
+      "condition": "Temperature > 25",
+      "action": "classify_as_high_risk",
+      "classification": "HighRisk"
+    }
+  ]
+}

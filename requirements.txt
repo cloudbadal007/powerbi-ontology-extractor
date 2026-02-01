@@ -1,0 +1,22 @@
+# Core dependencies
+pydantic>=2.0.0
+networkx>=3.0
+pyparsing>=3.0.0
+pandas>=2.0.0
+
+# CLI
+click>=8.0.0
+rich>=13.0.0
+
+# Visualization
+matplotlib>=3.7.0
+plotly>=5.14.0
+
+# OWL/RDF export
+rdflib>=6.3.0
+
+# JSON Schema
+jsonschema>=4.17.0
+
+# Utilities
+pyyaml>=6.0

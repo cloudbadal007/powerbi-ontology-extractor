@@ -1,0 +1,142 @@
+{
+  "name": "Test Model",
+  "tables": [
+    {
+      "name": "Shipment",
+      "description": "Shipment entity with tracking",
+      "columns": [
+        {
+          "name": "ShipmentID",
+          "dataType": "string",
+          "isKey": true,
+          "isNullable": false,
+          "description": "Primary key"
+        },
+        {
+          "name": "CustomerID",
+          "dataType": "string",
+          "isNullable": false,
+          "description": "Foreign key to Customer"
+        },
+        {
+          "name": "Temperature",
+          "dataType": "double",
+          "isNullable": true,
+          "description": "Temperature reading in Celsius"
+        },
+        {
+          "name": "Vibration",
+          "dataType": "double",
+          "isNullable": true,
+          "description": "Vibration reading"
+        },
+        {
+          "name": "Status",
+          "dataType": "string",
+          "isNullable": false,
+          "description": "Current shipment status"
+        },
+        {
+          "name": "WarehouseLocation",
+          "dataType": "string",
+          "isNullable": true,
+          "description": "Warehouse location"
+        }
+      ],
+      "measures": [
+        {
+          "name": "High Risk Shipments",
+          "expression": "CALCULATE(COUNT(Shipment[ShipmentID]), Shipment[Temperature] > 25)",
+          "description": "Count of high-risk shipments"
+        },
+        {
+          "name": "At Risk Revenue",
+          "expression": "CALCULATE(SUM(Orders[OrderValue]), Customers[RiskScore] > 80)",
+          "description": "Revenue from at-risk customers"
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "description": "Customer entity",
+      "columns": [
+        {
+          "name": "CustomerID",
+          "dataType": "string",
+          "isKey": true,
+          "isNullable": false
+        },
+        {
+          "name": "RiskScore",
+          "dataType": "double",
+          "isNullable": true
+        },
+        {
+          "name": "Email",
+          "dataType": "string",
+          "isNullable": true
+        }
+      ],
+      "measures": []
+    },
+    {
+      "name": "Warehouse",
+      "description": "Warehouse entity",
+      "columns": [
+        {
+          "name": "WarehouseID",
+          "dataType": "string",
+          "isKey": true,
+          "isNullable": false
+        },
+        {
+          "name": "Location",
+          "dataType": "string",
+          "isNullable": false,
+          "description": "Warehouse location"
+        },
+        {
+          "name": "Status",
+          "dataType": "string",
+          "isNullable": false
+        }
+      ],
+      "measures": []
+    }
+  ],
+  "relationships": [
+    {
+      "name": "Shipment_Customer",
+      "fromTable": "Shipment",
+      "fromColumn": "CustomerID",
+      "toTable": "Customer",
+      "toColumn": "CustomerID",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "crossFilteringBehavior": "singleDirection",
+      "isActive": true
+    },
+    {
+      "name": "Shipment_Warehouse",
+      "fromTable": "Shipment",
+      "fromColumn": "WarehouseLocation",
+      "toTable": "Warehouse",
+      "toColumn": "Location",
+      "fromCardinality": "many",
+      "toCardinality": "one",
+      "crossFilteringBehavior": "bothDirections",
+      "isActive": true
+    }
+  ],
+  "roles": [
+    {
+      "name": "Operations_Manager",
+      "tablePermissions": [
+        {
+          "name": "Shipment",
+          "filterExpression": "[Status] = 'In Transit'"
+        }
+      ]
+    }
+  ]
+}
