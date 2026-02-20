@@ -265,14 +265,14 @@ class OntologyGenerator:
         patterns = []
         
         for entity in self.semantic_model.entities:
-            entity_name_lower = entity.name.lower()
+            entity_name_lower = str(entity.name or "").lower()
             
             # Date table pattern
             if any(keyword in entity_name_lower for keyword in ['date', 'calendar', 'time']):
                 # Check for date-like columns
                 date_columns = ['year', 'month', 'day', 'quarter', 'week']
                 has_date_columns = any(
-                    any(dc in prop.name.lower() for dc in date_columns)
+                    any(dc in str(prop.name or "").lower() for dc in date_columns)
                     for prop in entity.properties
                 )
                 if has_date_columns:
@@ -322,7 +322,7 @@ class OntologyGenerator:
         
         for entity in self.semantic_model.entities:
             for prop in entity.properties:
-                prop_name_lower = prop.name.lower()
+                prop_name_lower = str(prop.name or "").lower()
                 
                 # Email validation
                 if 'email' in prop_name_lower and prop.data_type == "String":
@@ -367,17 +367,15 @@ class OntologyGenerator:
 
     def _classify_entity_type(self, entity: Entity) -> str:
         """Classify entity type based on characteristics."""
-        # This is a simplified classification
-        # Full classification uses pattern detection
-        if any(keyword in entity.name.lower() for keyword in ['date', 'calendar', 'time']):
+        entity_name = str(entity.name or "").lower()
+        if any(keyword in entity_name for keyword in ['date', 'calendar', 'time']):
             return "date"
         return "standard"
 
     def _determine_relationship_type(self, rel: Relationship) -> str:
         """Determine semantic relationship type from Power BI relationship."""
-        # Heuristic mapping based on entity names
-        from_lower = rel.from_entity.lower()
-        to_lower = rel.to_entity.lower()
+        from_lower = str(rel.from_entity or "").lower()
+        to_lower = str(rel.to_entity or "").lower()
         
         # Common patterns
         if 'customer' in from_lower and 'order' in to_lower:

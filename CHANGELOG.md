@@ -7,17 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Features in development
+## [0.1.2] - 2026-01-31
 
-### Changed
-- Changes in existing functionality
-
-### Deprecated
-- Soon-to-be removed features
-
-### Removed
-- Removed features
+### Fixed
+- Fixed `AttributeError: 'float' object has no attribute 'lower'` in `OntologyGenerator._determine_relationship_type()` when Power BI model has null/missing `toTable` or `fromTable` in relationships
+- Added defensive `str()` coercion across all extraction points in `PowerBIExtractor` (entities, relationships, measures, hierarchies, security rules) to handle null/NaN values from Power BI JSON models
+- Hardened `OntologyGenerator._classify_entity_type()`, `detect_patterns()`, and `suggest_enhancements()` against non-string entity/property names
 
 ### Fixed
 - Bug fixes

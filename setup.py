@@ -10,7 +10,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="powerbi-ontology-extractor",
-    version="0.1.0",
+    version="0.1.2",
     author="PowerBI Ontology Extractor Contributors",
     author_email="",
     description="Extract semantic intelligence from Power BI .pbix files and convert to formal ontologies",

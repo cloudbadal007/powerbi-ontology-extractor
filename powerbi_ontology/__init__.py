@@ -4,7 +4,7 @@ PowerBI Ontology Extractor
 Extract semantic intelligence from Power BI .pbix files and convert to formal ontologies.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 __author__ = "PowerBI Ontology Extractor Contributors"
 
 from powerbi_ontology.extractor import PowerBIExtractor, SemanticModel

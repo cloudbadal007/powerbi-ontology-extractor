@@ -161,8 +161,8 @@ class PowerBIExtractor:
         entities = []
         
         for table in tables:
-            table_name = table.get("name", "Unknown")
-            description = table.get("description", "")
+            table_name = str(table.get("name", "Unknown") or "Unknown")
+            description = str(table.get("description", "") or "")
             
             # Extract columns as properties
             properties = []
@@ -170,12 +170,12 @@ class PowerBIExtractor:
             
             for col in columns:
                 prop = Property(
-                    name=col.get("name", ""),
-                    data_type=self._map_data_type(col.get("dataType", "string")),
+                    name=str(col.get("name", "") or ""),
+                    data_type=self._map_data_type(str(col.get("dataType", "string") or "string")),
                     required=col.get("isNullable", True) is False,
                     unique=col.get("isUnique", False) or col.get("isKey", False),
-                    description=col.get("description", ""),
-                    source_column=col.get("name", "")
+                    description=str(col.get("description", "") or ""),
+                    source_column=str(col.get("name", "") or "")
                 )
                 properties.append(prop)
             
@@ -208,10 +208,10 @@ class PowerBIExtractor:
         relationships = []
         
         for rel in relationships_data:
-            from_table = rel.get("fromTable", "")
-            from_column = rel.get("fromColumn", "")
-            to_table = rel.get("toTable", "")
-            to_column = rel.get("toColumn", "")
+            from_table = str(rel.get("fromTable", "") or "")
+            from_column = str(rel.get("fromColumn", "") or "")
+            to_table = str(rel.get("toTable", "") or "")
+            to_column = str(rel.get("toColumn", "") or "")
             
             # Determine cardinality
             cardinality = "many-to-one"  # Default
@@ -254,11 +254,11 @@ class PowerBIExtractor:
         
         for measure_data in measures_data:
             measure = Measure(
-                name=measure_data.get("name", ""),
-                dax_formula=measure_data.get("expression", ""),
-                description=measure_data.get("description", ""),
-                folder=measure_data.get("displayFolder", ""),
-                table=measure_data.get("table", "")
+                name=str(measure_data.get("name", "") or ""),
+                dax_formula=str(measure_data.get("expression", "") or ""),
+                description=str(measure_data.get("description", "") or ""),
+                folder=str(measure_data.get("displayFolder", "") or ""),
+                table=str(measure_data.get("table", "") or "")
             )
             
             # Extract dependencies (basic - can be enhanced)
@@ -279,16 +279,16 @@ class PowerBIExtractor:
         hierarchies = []
         
         for table in tables:
-            table_name = table.get("name", "")
+            table_name = str(table.get("name", "") or "")
             
             # Extract hierarchies from table
             table_hierarchies = table.get("hierarchies", [])
             for hier in table_hierarchies:
                 hierarchy = Hierarchy(
-                    name=hier.get("name", ""),
+                    name=str(hier.get("name", "") or ""),
                     table=table_name,
-                    levels=[level.get("name", "") for level in hier.get("levels", [])],
-                    hierarchy_type="date" if "date" in table_name.lower() else "custom"
+                    levels=[str(level.get("name", "") or "") for level in hier.get("levels", [])],
+                    hierarchy_type="date" if "date" in str(table_name or "").lower() else "custom"
                 )
                 hierarchies.append(hierarchy)
         
@@ -312,12 +312,12 @@ class PowerBIExtractor:
             roles = model_data.get("roles", [])
         
         for role in roles:
-            role_name = role.get("name", "")
+            role_name = str(role.get("name", "") or "")
             table_permissions = role.get("tablePermissions", [])
             
             for perm in table_permissions:
-                table_name = perm.get("name", "")
-                filter_expression = perm.get("filterExpression", "")
+                table_name = str(perm.get("name", "") or "")
+                filter_expression = str(perm.get("filterExpression", "") or "")
                 
                 if filter_expression:
                     rule = SecurityRule(
@@ -340,7 +340,7 @@ class PowerBIExtractor:
             "boolean": "Boolean",
             "decimal": "Decimal",
         }
-        return type_mapping.get(pbix_type.lower(), "String")
+        return type_mapping.get(str(pbix_type or "string").lower(), "String")
 
     def _extract_measure_dependencies(self, dax_formula: str) -> List[str]:
         """

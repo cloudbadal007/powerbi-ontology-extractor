@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "powerbi-ontology-extractor"
-version = "0.1.0"
+version = "0.1.2"
 description = "Extract semantic intelligence from Power BI .pbix files and convert to formal ontologies"
 readme = "README.md"
 requires-python = ">=3.9"
