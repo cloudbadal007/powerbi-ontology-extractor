@@ -28,7 +28,7 @@ else:
     ]
 
 setup(
-    name="powerbi-ontology-extractor",
+    name="pbi-ontology-extractor",
     version="0.1.2",
     author="PowerBI Ontology Extractor Contributors",
     author_email="",

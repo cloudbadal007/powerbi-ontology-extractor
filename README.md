@@ -10,7 +10,7 @@
 [![codecov](https://codecov.io/gh/cloudbadal007/powerbi-ontology-extractor/branch/main/graph/badge.svg)](https://codecov.io/gh/cloudbadal007/powerbi-ontology-extractor)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PyPI version](https://badge.fury.io/py/powerbi-ontology-extractor.svg)](https://badge.fury.io/py/powerbi-ontology-extractor)
+[![PyPI version](https://badge.fury.io/py/pbi-ontology-extractor.svg)](https://badge.fury.io/py/pbi-ontology-extractor)
 
 [Installation](#installation) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Examples](#-examples) • [Contributing](#-contributing)
 
@@ -52,7 +52,7 @@ ontology.export_fabric_iq("supply_chain_ontology.json")  # Ready for AI agents
 ### Installation
 
 ```bash
-pip install powerbi-ontology-extractor
+pip install pbi-ontology-extractor
 ```
 
 Or install from source:
@@ -460,5 +460,5 @@ If this project helps you unlock the hidden ontologies in your Power BI dashboar
 **Ready to unlock the semantic intelligence in your Power BI dashboards?** 🚀
 
 ```bash
-pip install powerbi-ontology-extractor
+pip install pbi-ontology-extractor
 ```
