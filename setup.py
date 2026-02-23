@@ -1,12 +1,31 @@
 """Setup configuration for powerbi-ontology-extractor."""
 
+from pathlib import Path
 from setuptools import setup, find_packages
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+long_description = Path("README.md").read_text(encoding="utf-8")
 
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
+_requirements_file = Path("requirements.txt")
+if _requirements_file.exists():
+    requirements = [
+        line.strip()
+        for line in _requirements_file.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
+else:
+    requirements = [
+        "pydantic>=2.0.0",
+        "networkx>=3.0",
+        "pyparsing>=3.0.0",
+        "pandas>=2.0.0",
+        "click>=8.0.0",
+        "rich>=13.0.0",
+        "matplotlib>=3.7.0",
+        "plotly>=5.14.0",
+        "rdflib>=6.3.0",
+        "jsonschema>=4.17.0",
+        "pyyaml>=6.0",
+    ]
 
 setup(
     name="powerbi-ontology-extractor",
