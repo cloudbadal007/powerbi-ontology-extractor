@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-01-31
+
+### Fixed
+- Fixed circular import triggered by `from powerbi_ontology.utils.pbix_reader import PBIXReader`
+- Updated `powerbi_ontology.utils` to use lazy attribute imports so importing `pbix_reader` does not force `OntologyVisualizer` and related modules during package initialization
+
+## [0.1.3] - 2026-01-31
+
+### Fixed
+- Fixed packaging configuration so subpackages are included in PyPI distributions (`powerbi_ontology.utils`, `powerbi_ontology.export`, and other nested modules)
+- Resolved `ModuleNotFoundError: No module named 'powerbi_ontology.utils'` after installing from PyPI
+
 ## [0.1.2] - 2026-01-31
 
 ### Fixed

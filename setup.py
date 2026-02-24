@@ -29,7 +29,7 @@ else:
 
 setup(
     name="pbi-ontology-extractor",
-    version="0.1.2",
+    version="0.1.4",
     author="PowerBI Ontology Extractor Contributors",
     author_email="",
     description="Extract semantic intelligence from Power BI .pbix files and convert to formal ontologies",

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pbi-ontology-extractor"
-version = "0.1.2"
+version = "0.1.4"
 description = "Extract semantic intelligence from Power BI .pbix files and convert to formal ontologies"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -73,8 +73,8 @@ Changelog = "https://github.com/cloudbadal007/powerbi-ontology-extractor/blob/ma
 [project.scripts]
 pbi-ontology = "cli.pbi_ontology_cli:main"
 
-[tool.setuptools]
-packages = ["powerbi_ontology", "cli"]
+[tool.setuptools.packages.find]
+include = ["powerbi_ontology*", "cli*"]
 
 [tool.black]
 line-length = 88

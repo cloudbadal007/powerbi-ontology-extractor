@@ -6,6 +6,7 @@ Exports ontologies to OWL/RDF format for semantic web standards.
 
 import logging
 from typing import Optional
+from urllib.parse import quote
 
 from rdflib import Graph, Namespace, Literal, URIRef
 from rdflib.namespace import RDF, RDFS, OWL, XSD
@@ -34,7 +35,8 @@ class OWLExporter:
         self.graph = Graph()
         
         # Create namespace for this ontology
-        self.base_uri = f"http://example.com/ontologies/{ontology.name}#"
+        safe_name = quote(ontology.name, safe="")
+        self.base_uri = f"http://example.com/ontologies/{safe_name}#"
         self.ont = Namespace(self.base_uri)
 
     def export(self, format: str = "xml") -> str:

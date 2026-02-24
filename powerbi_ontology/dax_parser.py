@@ -138,7 +138,7 @@ class DAXParser:
                     condition=condition,
                     action="filter",
                     description=f"Filter condition from {measure_name}: {condition}",
-                    entity=self._extract_entity_from_condition(condition)
+                    entity=self._normalize_entity_name(self._extract_entity_from_condition(condition))
                 )
                 rules.append(rule)
         
@@ -160,7 +160,7 @@ class DAXParser:
                     action=f"classify_as_{true_value.replace('\"', '').replace(' ', '_').lower()}",
                     classification=true_value.replace('"', '').strip(),
                     description=f"IF condition: {parsed_condition} then {true_value} else {false_value}",
-                    entity=self._extract_entity_from_condition(condition)
+                    entity=self._normalize_entity_name(self._extract_entity_from_condition(condition))
                 )
                 rules.append(rule)
         
@@ -182,7 +182,7 @@ class DAXParser:
                         action=f"classify_as_{case_value.replace('\"', '').replace(' ', '_').lower()}",
                         classification=case_value.replace('"', '').strip(),
                         description=f"SWITCH case: {parsed_condition} -> {case_value}",
-                        entity=self._extract_entity_from_condition(case_condition)
+                        entity=self._normalize_entity_name(self._extract_entity_from_condition(case_condition))
                     )
                     rules.append(rule)
         
@@ -238,6 +238,12 @@ class DAXParser:
         if match:
             return match.group(1)
         return ""
+
+    def _normalize_entity_name(self, entity: str) -> str:
+        """Normalize extracted entity name for rule output."""
+        if entity.endswith("s") and len(entity) > 1:
+            return entity[:-1]
+        return entity
 
     def _extract_entity_from_field(self, field: str) -> str:
         """Extract entity from field name (heuristic)."""

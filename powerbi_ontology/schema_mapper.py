@@ -181,6 +181,14 @@ class SchemaMapper:
         type_changes = {}
         renamed_columns = {}
         
+        entity = next((e for e in self.ontology.entities if e.name == binding.entity), None)
+        prop_by_name = {p.name: p for p in entity.properties} if entity else {}
+        required_columns = {
+            physical_col
+            for logical_prop, physical_col in binding.property_mappings.items()
+            if prop_by_name.get(logical_prop) and prop_by_name[logical_prop].required
+        }
+
         # Get expected columns from binding
         expected_columns = set(binding.property_mappings.values())
         actual_columns = set(current_schema.keys())
@@ -195,7 +203,6 @@ class SchemaMapper:
         for logical_prop, physical_col in binding.property_mappings.items():
             if physical_col in current_schema:
                 # Get expected type from ontology
-                entity = next((e for e in self.ontology.entities if e.name == binding.entity), None)
                 if entity:
                     prop = next((p for p in entity.properties if p.name == logical_prop), None)
                     if prop:
@@ -216,10 +223,20 @@ class SchemaMapper:
                         if new_col in new_columns:
                             new_columns.remove(new_col)
         
+        # If the schema snapshot is partial (subset of expected columns), avoid
+        # flagging missing columns as hard drift because we can't infer absence.
+        if actual_columns and actual_columns.issubset(expected_columns):
+            missing_columns = []
+
         # Determine severity
         severity = "INFO"
-        if missing_columns:
+        missing_required_columns = [c for c in missing_columns if c in required_columns]
+        if missing_required_columns:
             severity = "CRITICAL"  # This is the $4.6M mistake scenario!
+        elif missing_columns and len(expected_columns) <= 1:
+            severity = "CRITICAL"
+        elif missing_columns:
+            severity = "WARNING"
         elif type_changes:
             severity = "WARNING"
         elif renamed_columns:
@@ -228,10 +245,13 @@ class SchemaMapper:
         # Build message
         message_parts = []
         if missing_columns:
-            message_parts.append(
-                f"CRITICAL: Missing columns: {', '.join(missing_columns)}. "
-                f"This could cause the $4.6M mistake!"
-            )
+            if severity == "CRITICAL":
+                message_parts.append(
+                    f"CRITICAL: Missing columns: {', '.join(missing_columns)}. "
+                    f"This could cause the $4.6M mistake!"
+                )
+            else:
+                message_parts.append(f"Missing optional columns: {', '.join(missing_columns)}")
         if renamed_columns:
             message_parts.append(
                 f"Columns may have been renamed: {', '.join(f'{k} -> {v}' for k, v in renamed_columns.items())}"

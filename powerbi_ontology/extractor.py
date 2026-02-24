@@ -336,7 +336,7 @@ class PowerBIExtractor:
             "string": "String",
             "int64": "Integer",
             "double": "Decimal",
-            "dateTime": "Date",
+            "datetime": "Date",
             "boolean": "Boolean",
             "decimal": "Decimal",
         }
