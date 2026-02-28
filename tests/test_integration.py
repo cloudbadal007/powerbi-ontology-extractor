@@ -37,6 +37,52 @@ class TestIntegration:
         
         assert isinstance(fabric_json, dict)
         assert "entities" in fabric_json
+
+    def test_complete_workflow_pbip_tmdl_to_ontology(self, temp_dir):
+        """Test complete workflow for PBIP/TMDL project input."""
+        project_dir = temp_dir / "InventoryProject"
+        tables_dir = project_dir / "definition" / "tables"
+        tables_dir.mkdir(parents=True)
+
+        (project_dir / "InventoryProject.pbip").write_text("{}", encoding="utf-8")
+        (tables_dir / "Shipment.tmdl").write_text(
+            """
+table Shipment
+    column ShipmentID
+        dataType: string
+    column Temperature
+        dataType: double
+    measure High Risk Shipments = CALCULATE(COUNT(Shipment[ShipmentID]), Shipment[Temperature] > 25)
+""".strip(),
+            encoding="utf-8",
+        )
+        (tables_dir / "Customer.tmdl").write_text(
+            """
+table Customer
+    column CustomerID
+        dataType: string
+""".strip(),
+            encoding="utf-8",
+        )
+        (project_dir / "definition" / "relationships.tmdl").write_text(
+            """
+relationship ShipmentCustomer
+    fromColumn: Shipment[CustomerID]
+    toColumn: Customer[CustomerID]
+""".strip(),
+            encoding="utf-8",
+        )
+
+        extractor = PowerBIExtractor(str(project_dir / "InventoryProject.pbip"))
+        semantic_model = extractor.extract()
+
+        assert semantic_model is not None
+        assert len(semantic_model.entities) == 2
+        assert len(semantic_model.relationships) == 1
+
+        ontology = OntologyGenerator(semantic_model).generate()
+        assert ontology is not None
+        assert len(ontology.entities) == 2
     
     def test_multi_dashboard_analysis(self, multiple_semantic_models):
         """Test analyzing multiple dashboards."""

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-01-31
+
+### Added
+- Added PBIP/TMDL project support in `PBIXReader`:
+  - Accepts directory paths for PBIP projects
+  - Accepts `.pbip` descriptor file paths (uses project root)
+  - Parses `.tmdl` files to extract tables, columns, measures, and relationships
+
+### Fixed
+- `PowerBIExtractor.extract()` now works for newer Power BI Project (PBIP/TMDL) inputs that do not contain `model.bim`
+- Prevented accidental directory deletion in cleanup when reader is used in PBIP project mode
+- Added integration and unit tests for PBIP/TMDL workflows
+
 ## [0.1.4] - 2026-01-31
 
 ### Fixed

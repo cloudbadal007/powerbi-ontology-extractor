@@ -178,3 +178,68 @@ class TestPBIXReader:
         reader = PBIXReader(str(pbix_invalid))
         with pytest.raises(ValueError, match="Invalid JSON"):
             reader.read_model()
+
+    def test_read_model_from_tmdl_project_directory(self, temp_dir):
+        """Test reading semantic model from PBIP/TMDL project directory."""
+        project_dir = temp_dir / "ANZ Inventory Report"
+        tables_dir = project_dir / "definition" / "tables"
+        tables_dir.mkdir(parents=True)
+
+        (tables_dir / "Shipment.tmdl").write_text(
+            """
+table Shipment
+    column ShipmentID
+        dataType: string
+    column Temperature
+        dataType: double
+    measure High Risk Shipments = CALCULATE(COUNT(Shipment[ShipmentID]), Shipment[Temperature] > 25)
+""".strip(),
+            encoding="utf-8",
+        )
+        (tables_dir / "Customer.tmdl").write_text(
+            """
+table Customer
+    column CustomerID
+        dataType: string
+""".strip(),
+            encoding="utf-8",
+        )
+        (project_dir / "definition" / "relationships.tmdl").write_text(
+            """
+relationship ShipmentCustomer
+    fromColumn: Shipment[CustomerID]
+    toColumn: Customer[CustomerID]
+""".strip(),
+            encoding="utf-8",
+        )
+
+        reader = PBIXReader(str(project_dir))
+        model = reader.read_model()
+
+        assert model["name"] == "ANZ Inventory Report"
+        assert len(model["tables"]) == 2
+        assert any(t["name"] == "Shipment" for t in model["tables"])
+        assert len(model["relationships"]) == 1
+
+    def test_read_model_from_pbip_file(self, temp_dir):
+        """Test reading semantic model when path points to .pbip descriptor file."""
+        project_dir = temp_dir / "InventoryProject"
+        tables_dir = project_dir / "definition" / "tables"
+        tables_dir.mkdir(parents=True)
+
+        (project_dir / "InventoryProject.pbip").write_text("{}", encoding="utf-8")
+        (tables_dir / "Product.tmdl").write_text(
+            """
+table Product
+    column ProductID
+        dataType: string
+""".strip(),
+            encoding="utf-8",
+        )
+
+        reader = PBIXReader(str(project_dir / "InventoryProject.pbip"))
+        model = reader.read_model()
+
+        assert model["name"] == "InventoryProject"
+        assert len(model["tables"]) == 1
+        assert model["tables"][0]["name"] == "Product"
